@@ -13,5 +13,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path(r'similar-symptoms', views.SimilarSymptoms.as_view(), name="similar-symptoms"),
     path(r'diagnoses', views.Diagnosis.as_view(), name="diagnosis"),
+    path(r'check-symptom', views.CheckSymptom.as_view(), name="check-symptom"),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

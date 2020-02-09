@@ -8,6 +8,7 @@ from backend.api.models import Diagnosis
 from backend.api.serializers import UserSerializer, GroupSerializer, DiagnosisSerializer#, DiagnosisCreateSerializer
 from backend.api.ml.nncf import NNCF
 from backend.api.ml.svm import SVM
+from backend.api.ml.word2vec import WordToVec
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -46,3 +47,10 @@ class SimilarSymptoms(APIView):
         nncf = NNCF(os.path.join(settings.BASE_DIR, "Training.csv"), 10)
         prediction = nncf.get_nearest_symptoms(input_symptoms, 5, 0.00000001)
         return Response(prediction)
+
+class CheckSymptom(APIView):
+
+    def post(self, request, format=None):
+        symptom = request.data['symptom'].strip()
+        wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
+        return Response(wordtovec.check_symptom(symptom))
