@@ -36,7 +36,7 @@ class Diagnosis(APIView):
     def post(self, request, format=None):
         symptoms = request.data['symptoms'].strip().split(', ')
         svm = SVM(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, 'Testing.csv'))
-        return Response(str(svm.get_prediction(symptoms)))
+        return Response(svm.get_prediction(symptoms)[0])
         print('Test accuarcy: ' + str(svm.get_test_score()))
 
 
