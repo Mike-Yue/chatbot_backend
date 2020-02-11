@@ -23,9 +23,14 @@ class WordToVec:
 
         symptoms_in_dataset = []
         symptoms_not_in_dataset = []
-
+    
         # Get list of words that are similar to the symptom entered 
-        similar_words = self.model.most_similar(positive=[symptom], negative=None, topn = 100)
+        try:
+            similar_words = self.model.most_similar(positive=[symptom], negative=None, topn = 100)
+        except:
+            similar_words = []
+
+
 
         # Check if similar words appear in ML symptom set
         for symptom_data in similar_words:
