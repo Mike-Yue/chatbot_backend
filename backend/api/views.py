@@ -10,6 +10,8 @@ from backend.api.ml.nncf import NNCF
 from backend.api.ml.svm import SVM
 from backend.api.ml.word2vec import WordToVec
 
+wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -36,7 +38,7 @@ class Diagnosis(APIView):
     def post(self, request, format=None):
         symptoms = request.data['symptoms'].strip().split(', ')
         svm = SVM(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, 'Testing.csv'))
-        return Response(svm.get_prediction(symptoms)[0])
+        return Response(svm.get_prediction(symptoms)[0] )
         print('Test accuarcy: ' + str(svm.get_test_score()))
 
 
@@ -49,8 +51,7 @@ class SimilarSymptoms(APIView):
         return Response(prediction)
 
 class CheckSymptom(APIView):
-
     def post(self, request, format=None):
         symptom = request.data['symptom'].strip()
-        wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
+        #wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
         return Response(wordtovec.check_symptom(symptom))
