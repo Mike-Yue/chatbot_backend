@@ -89,3 +89,7 @@ db.sqlite3
 lib64
 share/
 *.cfg
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
