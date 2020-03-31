@@ -10,7 +10,7 @@ from backend.api.ml.nncf import NNCF
 from backend.api.ml.svm import SVM
 from backend.api.ml.word2vec import WordToVec
 
-wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), "GoogleNews-vectors-negative300.bin")
+wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
 
 class UserViewSet(viewsets.ModelViewSet):
     """
