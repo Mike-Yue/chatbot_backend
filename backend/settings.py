@@ -81,14 +81,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'chatbot',
-        'USER': 'chatbot',
-        'PASSWORD': 'awschatbot',
-        'HOST' : 'localhost',
-        'PORT' : '5432',
-    }
 }
 
 

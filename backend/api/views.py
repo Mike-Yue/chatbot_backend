@@ -7,9 +7,11 @@ from rest_framework.response import Response
 from backend.api.models import Diagnosis
 from backend.api.serializers import UserSerializer, GroupSerializer, DiagnosisSerializer#, DiagnosisCreateSerializer
 from backend.api.ml.nncf import NNCF
-from backend.api.ml.svm import SVM
+from backend.api.ml.svm_kfolds import SVM
+from backend.api.ml.ModelSelector import ModelSelector
 from backend.api.ml.word2vec import WordToVec
 
+model_selector = ModelSelector(os.path.join(settings.BASE_DIR, "Training.csv"))
 wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -37,8 +39,7 @@ class Diagnosis(APIView):
 
     def post(self, request, format=None):
         symptoms = request.data['symptoms'].strip().split(', ')
-        svm = SVM(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, 'Testing.csv'))
-        return Response(svm.get_prediction(symptoms)[0] )
+        return Response(model_selector.get_models()[model_selector.suggest_model()].get_prediction(symptoms)[0])
         print('Test accuarcy: ' + str(svm.get_test_score()))
 
 

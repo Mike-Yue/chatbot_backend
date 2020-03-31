@@ -1,30 +1,38 @@
 from sklearn.svm import SVC
+from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import pandas as pd
 
 
 class SVM:
     """
-    Fits a SVM model using ALL the given data in train_dataset_name
+    Fits a Support Vector Machine model using the data in a given dataset for training and validation
+    using K-Folds cross validation
     """
-    def __init__(self, train_dataset_name, test_dataset_name):
-
-        # Save set of possible symptoms
-        self.symptom_set = pd.read_csv(train_dataset_name).columns[:-1].values.tolist() #Exclude last col, prognosis col
+    def __init__(self, dataset_name):
         
-        svm = SVC(probability=True)
+        svm = SVC(probability=True, gamma='auto')
+        skf = StratifiedKFold(n_splits=3) # 3 folds calculated, resulting in 66/33 train/test split for each
 
-        # Create model from training data
-        train_dataset = pd.read_csv(train_dataset_name)
-        X_train = train_dataset.iloc[:, :-1].values
-        Y_train = train_dataset.iloc[:, -1].values
-        self.model = svm.fit(X_train, Y_train)
+        dataset = pd.read_csv(dataset_name)
+        self.symptom_set = dataset.columns[:-1].values.tolist() #Exclude last col, prognosis col
 
-        # Get test accuarcy
-        test_dataset = pd.read_csv(test_dataset_name)
-        X_test = test_dataset.iloc[:, :-1].values
-        Y_test = test_dataset.iloc[:, -1].values
-        self.score = svm.score(X_test, Y_test)
+        X = dataset.iloc[:, :-1].values
+        y = dataset.iloc[:, -1].values
+
+        self.num_rows = len(X)
+        self.num_cols = len(X[0])
+
+        self.score = 0
+        for train_index, test_index in skf.split(X,y): #Iterate through each fold
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, y_test = y[train_index], y[test_index]
+            model = svm.fit(X, y)
+            score = svm.score(X_test, y_test)
+            if (score > self.score): #Keep most accurate model
+                self.model = model
+                self.score = score
+        
 
     """
     Return a dictionary of disease to likelihoods given a list of symptoms
@@ -62,10 +70,3 @@ class SVM:
     def get_test_score(self):
         return self.score
 
-
-#Testing
-#svm = SVM('Training.csv','Testing.csv')
-#symptoms = ['continuous_sneezing' ,'shivering' ,'chills']
-#print('Test accuarcy: ' + str(svm.get_test_score()))
-#print('Prediction: ' + str(svm.get_prediction(symptoms)))
-#print('Prediction: ' + str(svm.get_predictions(symptoms)))

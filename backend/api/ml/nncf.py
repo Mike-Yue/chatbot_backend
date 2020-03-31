@@ -86,9 +86,3 @@ class NNCF:
         if (sim > 1): # Account for weird float math
             return 1
         return sim
-
-
-#Testing
-#nncf = NNCF('Training.csv', 10)
-#symptoms = ['shivering' ,'stomach_pain', 'acidity', 'vomiting']
-#print(nncf.get_nearest_symptoms(symptoms, 5, 0.00000001))
