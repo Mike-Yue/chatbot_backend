@@ -171,8 +171,8 @@ class ModelSelector:
 
 
 #Testing (example usage)
-selector = ModelSelector('Training.csv')
-symptoms = ['runny_nose','skin_rash','nodal_skin_eruptions']
+#selector = ModelSelector('Training.csv')
+#symptoms = ['runny_nose','skin_rash','nodal_skin_eruptions']
 
 """
 prediction_map = selector.get_all_predictions(symptoms)
