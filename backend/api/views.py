@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 import os
+import ast
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -38,7 +39,7 @@ class DiagnosisViewSet(viewsets.ModelViewSet):
 class Diagnosis(APIView):
 
     def post(self, request, format=None):
-        symptoms = request.data['symptoms'].strip().split(', ')
+        symptoms = ast.literal_eval(request.data['symptoms'])
         return Response(model_selector.get_models()[model_selector.suggest_model()].get_prediction(symptoms)[0])
         print('Test accuarcy: ' + str(svm.get_test_score()))
 
@@ -46,7 +47,7 @@ class Diagnosis(APIView):
 class SimilarSymptoms(APIView):
     
     def post(self, request, format=None):
-        input_symptoms = request.data['symptoms'].strip().split(', ')
+        input_symptoms = ast.literal_eval(request.data['symptoms'])
         nncf = NNCF(os.path.join(settings.BASE_DIR, "Training.csv"), 10)
         prediction = nncf.get_nearest_symptoms(input_symptoms, 5, 0.00000001)
         return Response(prediction)
