@@ -25,10 +25,10 @@ class WordToVec:
         symptoms_not_in_dataset = []
     
         # Get list of words that are similar to the symptom entered 
-        #try:
-        similar_words = self.model.most_similar(positive=[symptom], negative=None, topn = 100)
-        #except:
-        #    similar_words = []
+        try:
+            similar_words = self.model.most_similar(positive=[symptom], negative=None, topn = 100)
+        except KeyError:
+            similar_words = []
 
 
 

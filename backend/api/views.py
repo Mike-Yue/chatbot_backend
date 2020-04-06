@@ -1,48 +1,21 @@
-from django.contrib.auth.models import User, Group
 import os
 import ast
 from django.conf import settings
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from backend.api.models import Diagnosis
-from backend.api.serializers import UserSerializer, GroupSerializer, DiagnosisSerializer#, DiagnosisCreateSerializer
 from backend.api.ml.nncf import NNCF
 from backend.api.ml.svm_kfolds import SVM
 from backend.api.ml.ModelSelector import ModelSelector
 from backend.api.ml.word2vec import WordToVec
 
 model_selector = ModelSelector(os.path.join(settings.BASE_DIR, "Training.csv"))
-wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-class DiagnosisViewSet(viewsets.ModelViewSet):
-    queryset = Diagnosis.objects.all()
-
-    def get_serializer_class(self):
-        return DiagnosisSerializer
+wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "Word2vec.bin"))
 
 class Diagnosis(APIView):
 
     def post(self, request, format=None):
         symptoms = ast.literal_eval(request.data['symptoms'])
         return Response(model_selector.get_models()[model_selector.suggest_model()].get_prediction(symptoms)[0])
-        print('Test accuarcy: ' + str(svm.get_test_score()))
-
 
 class SimilarSymptoms(APIView):
     
@@ -55,5 +28,4 @@ class SimilarSymptoms(APIView):
 class CheckSymptom(APIView):
     def post(self, request, format=None):
         symptom = request.data['symptom'].strip()
-        #wordtovec = WordToVec(os.path.join(settings.BASE_DIR, "Training.csv"), os.path.join(settings.BASE_DIR, "GoogleNews-vectors-negative300.bin"))
         return Response(wordtovec.check_symptom(symptom))
