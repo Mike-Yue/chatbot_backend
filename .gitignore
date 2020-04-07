@@ -93,3 +93,6 @@ share/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+#Word 2 vec bin files
+Word2vec.bin
